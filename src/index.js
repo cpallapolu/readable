@@ -5,25 +5,37 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { blue, red, green } from 'material-ui/colors';
 
 import { store } from './state/store';
 import App from './containers/App';
 
 import './styles/index.css';
 
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: blue,
+    secondary: {
+      ...green,
+      A400: '#00e677',
+    },
+    error: red,
+  },
+});
+
 const Root = () => {
   return (
     <Provider store={ store }>
       <BrowserRouter>
-        <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+        <MuiThemeProvider theme={theme}>
           <App />
         </MuiThemeProvider>
       </BrowserRouter>
     </Provider>
   );
 };
+
 
 render(<Root />, document.getElementById('root'));

@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 
 import { withStyles } from 'material-ui/styles';
 
-import { AppBar, Toolbar, Typography, IconButton } from 'material-ui';
+import { AppBar, Toolbar, Typography } from 'material-ui';
 
-import { Info } from 'material-ui-icons';
+import { Copyright } from 'material-ui-icons';
 
 const styles = theme => ({
   root: {
@@ -15,35 +15,30 @@ const styles = theme => ({
   },
   flex: {
     flex: 1,
+    justify: 'center',
+    'text-align': 'center'
   },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
+  copyright: {
+    width: 18,
+    height: 18,
+  }
 });
 
-class Header extends Component {
+class Footer extends Component {
   static propTypes = {
 
-  }
-
-  handleTouchTap() {
-    alert('onClick triggered on the title component');
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <div>
+      <div className={classes.root}>
         <AppBar position="static" color="primary">
           <Toolbar>
-            <Typography type="title" className={classes.flex}>
-              <span style={{cursor: 'pointer'}}>Readable</span>
+            <Typography type="body1" className={classes.flex}>
+              Developed By Chanakya Pallapolu, 2017 <Copyright className={classes.copyright}/>
             </Typography>
-            <IconButton color="contrast" aria-label="Info">
-              <Info />
-            </IconButton>
           </Toolbar>
         </AppBar>
       </div>
@@ -58,4 +53,4 @@ function mapStateToProps(state, ownProps) {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(Header));
+export default connect(mapStateToProps)(withStyles(styles)(Footer));
