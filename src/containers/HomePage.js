@@ -30,7 +30,7 @@ const styles = theme => ({
   },
   postCardDiv: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     flexWrap: 'wrap'
   },
   postCardGrid: {
@@ -72,7 +72,7 @@ class HomePage extends Component {
           <Grid container className={classes.postCardGrid}>
             {
               [1, 2, 3, 4, 5].map(() => (
-                <Grid item xs={3}>
+                <Grid item>
                   <PostCard />
                 </Grid>
               ))

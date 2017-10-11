@@ -12,7 +12,7 @@ import { Avatar, IconButton, Typography, Badge, Divider } from 'material-ui';
 import { ThumbUp, ThumbDown, Reply } from 'material-ui-icons';
 
 const styles = theme => ({
-  card: { minWidth: 275 },
+  card: { minWidth: 305, maxWidth: 305 },
   title: { marginBottom: 16, fontSize: 14, color: theme.palette.text.secondary },
   avatar: { color: cyan['A400'] },
   dividerColor: { 'background-color': grey[700] },
