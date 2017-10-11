@@ -1,8 +1,16 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-import Chip from 'material-ui/Chip';
+import { withStyles } from 'material-ui/styles';
+
+import { Chip } from 'material-ui';
+
+const styles = theme => ({
+  link: { 'text-decoration': 'none' },
+  chip: { margin: 4, 'text-decoration': 'none', cursor: 'pointer' }
+});
 
 class CategoryChip extends Component {
   static propTypes = {
@@ -10,10 +18,18 @@ class CategoryChip extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
-      <Chip label={"Category - " + this.props.number} onClick={() => alert('you click me chip!!')} style={{margin: 4}} />
+      <Link to="/category" className={classes.link}>
+        <Chip
+          label={"Category - " + this.props.number}
+          className={classes.chip}
+        />
+      </Link>
+
     )
   }
 };
 
-export default CategoryChip;
+export default withStyles(styles)(CategoryChip);

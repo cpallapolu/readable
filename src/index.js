@@ -28,11 +28,11 @@ const theme = createMuiTheme({
 const Root = () => {
   return (
     <Provider store={ store }>
-      <BrowserRouter>
-        <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme}>
+        <BrowserRouter>
           <App />
-        </MuiThemeProvider>
-      </BrowserRouter>
+        </BrowserRouter>
+      </MuiThemeProvider>
     </Provider>
   );
 };

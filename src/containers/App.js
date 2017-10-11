@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import '../styles/App.css';
@@ -34,11 +34,14 @@ class App extends Component {
           <EditPage />
         )} />
 
+        <Route path='/info' render={() => (
+          <EditPage />
+        )} />
+
         <Footer />
 
       </div>
     );
   }
 }
-
-export default connect()(App);
+export default withRouter(connect()(App));

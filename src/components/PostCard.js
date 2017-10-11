@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import { grey, red, teal, cyan } from 'material-ui/colors';
@@ -11,35 +12,15 @@ import { Avatar, IconButton, Typography, Badge, Divider } from 'material-ui';
 import { ThumbUp, ThumbDown, Reply } from 'material-ui-icons';
 
 const styles = theme => ({
-  card: {
-    minWidth: 275,
-  },
-  title: {
-    marginBottom: 16,
-    fontSize: 14,
-    color: theme.palette.text.secondary
-  },
-  avatar: {
-    color: cyan['A400']
-  },
-  dividerColor: {
-    'background-color': grey[700]
-  },
-  moveRight: {
-    flex: '1 1 auto'
-  },
-  badge: {
-    margin: `0 ${theme.spacing.unit * 3}px`
-  },
-  thumbDown: {
-    color: red[400]
-  },
-  thumbUp: {
-    color: teal[400]
-  },
-  reply: {
-    transform: 'scaleX(-1)'
-  }
+  card: { minWidth: 275 },
+  title: { marginBottom: 16, fontSize: 14, color: theme.palette.text.secondary },
+  avatar: { color: cyan['A400'] },
+  dividerColor: { 'background-color': grey[700] },
+  moveRight: { flex: '1 1 auto' },
+  badge: { margin: `0 ${theme.spacing.unit * 3}px` },
+  thumbDown: { color: red[400] },
+  thumbUp: { color: teal[400] },
+  reply: { transform: 'scaleX(-1)', color: grey[50] }
 });
 
 class PostCard extends Component {
@@ -86,7 +67,9 @@ class PostCard extends Component {
           </IconButton>
           <div className={classes.moveRight} />
           <IconButton aria-label="Click Me">
-            <Reply className={classes.reply} />
+            <Link to="/post" >
+              <Reply className={classes.reply} />
+            </Link>
           </IconButton>
         </CardActions>
       </Card>

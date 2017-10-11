@@ -9,19 +9,9 @@ import { AppBar, Toolbar, Typography } from 'material-ui';
 import { Copyright } from 'material-ui-icons';
 
 const styles = theme => ({
-  root: {
-    marginTop: theme.spacing.unit * 3,
-    width: '100%',
-  },
-  flex: {
-    flex: 1,
-    justify: 'center',
-    'text-align': 'center'
-  },
-  copyright: {
-    width: 18,
-    height: 18,
-  }
+  root: { marginTop: theme.spacing.unit * 3, width: '100%' },
+  flex: { flex: 1, justify: 'center', 'text-align': 'center' },
+  copyright: { width: 18, height: 18 }
 });
 
 class Footer extends Component {
