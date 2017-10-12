@@ -1,11 +1,9 @@
+
 import { combineReducers } from 'redux';
-import {reducer as formReduces} from 'redux-form'
 
 //Reducers
-import PostReducer from './posts_reducer';
-import CategoriesReducer from './categories_reducer'
+import categories from './categories';
 
-export const reducers = combineReducers({
-  postState: PostReducer,
-  categoriesState: CategoriesReducer
+export default combineReducers({
+  categories
 });

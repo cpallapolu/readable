@@ -9,6 +9,8 @@ import { Grid, Divider } from 'material-ui';
 import PostCard from '../components/PostCard';
 import CategoryChip from '../components/CategoryChip';
 
+import { getCategories } from '../state/actions/index';
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -30,12 +32,13 @@ const styles = theme => ({
   },
   postCardDiv: {
     display: 'flex',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     flexWrap: 'wrap'
   },
   postCardGrid: {
     width: '100%',
-    margin: '0px'
+    margin: '0px',
+    justifyContent: 'space-around'
   }
 });
 
@@ -44,8 +47,14 @@ class HomePage extends Component {
 
   }
 
+  componentWillMount() {
+    this.props.getCategories();
+  }
+
   render() {
     const { classes } = this.props;
+
+    console.log(this.props);
 
     return (
       <div>
@@ -57,7 +66,7 @@ class HomePage extends Component {
           <Grid container className={classes.chipGrid}>
             {
               [1, 2, 3, 4, 5].map((item) => (
-                <Grid item>
+                <Grid key={item} item>
                   <CategoryChip number={item} />
                 </Grid>
               ))
@@ -71,8 +80,8 @@ class HomePage extends Component {
         <div className={classes.postCardDiv}>
           <Grid container className={classes.postCardGrid}>
             {
-              [1, 2, 3, 4, 5].map(() => (
-                <Grid item>
+              [1, 2, 3, 4, 5].map((item) => (
+                <Grid key={item} item>
                   <PostCard />
                 </Grid>
               ))
@@ -85,10 +94,17 @@ class HomePage extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
+  console.log('state: ', state.categories);
   return {
     ...state,
     classes: ownProps.classes
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(HomePage));
+function mapDispatchToProps(dispatch) {
+  return {
+    getCategories: (data) => dispatch(getCategories(data))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(HomePage));
