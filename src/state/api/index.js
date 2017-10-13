@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-const BACKEND_URL = 'http://localhost:3001';
+import { AUTH_KEY, BASE_URL } from '../helpers';
 
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
@@ -15,16 +15,16 @@ const checkStatus = (response) => {
   }
 };
 
-const callApi = (path, options = {}) => {
-  const completeUrl = `${BACKEND_URL}${path}`;
+const callApi = (path, method, body = {}) => {
+  const completeUrl = `${BASE_URL}${path}`;
 
   const completeOptions ={
-    method: _.toUpper(options.method),
-    headers: options.headers
+    method: _.toUpper(method),
+    headers: { Authorization: AUTH_KEY }
   };
 
-  if (_.get(options, 'body')) {
-    completeOptions.body = JSON.stringify(_.get(options, 'body', {}));
+  if (!_.isEmpty(body)) {
+    completeOptions.body = JSON.stringify(body);
   }
 
   return fetch(completeUrl, completeOptions)

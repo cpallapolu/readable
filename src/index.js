@@ -5,6 +5,8 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
+import { IntlProvider } from 'react-intl'
+
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import { blue, red, green } from 'material-ui/colors';
 
@@ -27,13 +29,16 @@ const theme = createMuiTheme({
 
 const Root = () => {
   return (
-    <Provider store={ store }>
-      <MuiThemeProvider theme={theme}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </MuiThemeProvider>
-    </Provider>
+    <IntlProvider locale="en">
+      <Provider store={ store }>
+        <MuiThemeProvider theme={theme}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </MuiThemeProvider>
+      </Provider>
+    </IntlProvider>
+
   );
 };
 

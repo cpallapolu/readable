@@ -1,16 +1,20 @@
 
-import { GET_CATEGORIES } from './';
+import api from '../api';
 
-const getCategories = () => {
-  return {
-    type: GET_CATEGORIES,
-    meta: {
-      key: 'categories',
-      method: 'GET',
-      path: '/categories',
-      remote: true
-    }
-  }
+export const FETCH_CATEGORIES = 'FETCH_CATEGORIES';
+const fetchCategories = () => (dispatch) => {
+  api('/categories', 'GET')
+    .then((response) => {
+      dispatch(getCategories(response.categories))
+    });
 };
 
-export { getCategories }
+export const GET_CATEGORIES = 'GET_CATEGORIES';
+const getCategories = (categories) => {
+  return {
+    type: GET_CATEGORIES,
+    categories
+  };
+};
+
+export { fetchCategories }

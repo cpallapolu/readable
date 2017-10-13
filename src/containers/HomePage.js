@@ -9,7 +9,7 @@ import { Grid, Divider } from 'material-ui';
 import PostCard from '../components/PostCard';
 import CategoryChip from '../components/CategoryChip';
 
-import { getCategories } from '../state/actions/index';
+import { fetchCategories, fetchPosts } from '../state/actions/index';
 
 const styles = theme => ({
   root: {
@@ -48,13 +48,12 @@ class HomePage extends Component {
   }
 
   componentWillMount() {
-    this.props.getCategories();
+    this.props.fetchCategories();
+    this.props.fetchPosts();
   }
 
   render() {
-    const { classes } = this.props;
-
-    console.log(this.props);
+    const { classes, categories, posts } = this.props;
 
     return (
       <div>
@@ -65,9 +64,9 @@ class HomePage extends Component {
         <div className={classes.chipDiv}>
           <Grid container className={classes.chipGrid}>
             {
-              [1, 2, 3, 4, 5].map((item) => (
-                <Grid key={item} item>
-                  <CategoryChip number={item} />
+              categories.map((category, index) => (
+                <Grid key={index} item>
+                  <CategoryChip name={category.name} path={category.path}/>
                 </Grid>
               ))
             }
@@ -80,9 +79,15 @@ class HomePage extends Component {
         <div className={classes.postCardDiv}>
           <Grid container className={classes.postCardGrid}>
             {
-              [1, 2, 3, 4, 5].map((item) => (
-                <Grid key={item} item>
-                  <PostCard />
+              posts.map((post, index) => (
+                <Grid key={index} item>
+                  <PostCard
+                    id={post.id}
+                    title={post.title}
+                    body={post.body}
+                    author={post.author}
+                    timestamp={post.timestamp}
+                    voteScore={post.voteScore} />
                 </Grid>
               ))
             }
@@ -94,16 +99,17 @@ class HomePage extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  console.log('state: ', state.categories);
   return {
-    ...state,
+    categories: state.categories,
+    posts: state.posts,
     classes: ownProps.classes
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getCategories: (data) => dispatch(getCategories(data))
+    fetchCategories: () => dispatch(fetchCategories()),
+    fetchPosts: () => dispatch(fetchPosts())
   }
 }
 

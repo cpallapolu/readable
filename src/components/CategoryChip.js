@@ -14,17 +14,18 @@ const styles = theme => ({
 
 class CategoryChip extends Component {
   static propTypes = {
-    number: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, path, name } = this.props;
 
     return (
-      <Link to="/category" className={classes.link}>
+      <Link to={"/category/" + path} className={classes.link}>
         <Chip
-          label={"Category - " + this.props.number}
           className={classes.chip}
+          label={name}
         />
       </Link>
 

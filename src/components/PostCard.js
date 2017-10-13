@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FormattedDate } from 'react-intl';
 
 import { withStyles } from 'material-ui/styles';
 import { grey, red, teal, cyan } from 'material-ui/colors';
@@ -15,7 +16,8 @@ const styles = theme => ({
   card: { minWidth: 305, maxWidth: 305 },
   title: { marginBottom: 16, fontSize: 14, color: theme.palette.text.secondary },
   avatar: { color: cyan['A400'] },
-  dividerColor: { 'background-color': grey[700] },
+  firstDividerColor: { 'background-color': grey[700] },
+  secondDividerColor: { 'background-color': grey[700] },
   moveRight: { flex: '1 1 auto' },
   badge: { margin: `0 ${theme.spacing.unit * 3}px` },
   thumbDown: { color: red[400] },
@@ -25,40 +27,42 @@ const styles = theme => ({
 
 class PostCard extends Component {
   static propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    voteCount: PropTypes.number.isRequired,
-
+    body: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    timestamp: PropTypes.number.isRequired,
+    voteScore: PropTypes.number.isRequired
   }
 
   render() {
     const { classes } = this.props;
+    const { id, title, body, author, timestamp, voteScore } = this.props;
 
     return (
       <Card className={classes.card}>
         <CardHeader avatar={
-          <Avatar aria-label="Recipe" className={classes.avatar}>R</Avatar>
+          <Avatar aria-label="Recipe" className={classes.avatar}>{author.match(/\b(\w)/g).join('').toUpperCase()}</Avatar>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={author}
+        subheader={<FormattedDate value={timestamp} day="numeric" month="long" year="numeric" />}
         />
 
-        <Divider className={classes.dividerColor} />
+        <Divider className={classes.firstDividerColor} />
 
         <CardContent>
           <Typography type="body1" className={classes.title}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            {title}
           </Typography>
           <Typography component="p">
-            Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-            Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-            Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
+            {body}
           </Typography>
         </CardContent>
 
-        <Divider className={classes.dividerColor} />
+        <Divider className={classes.secondDividerColor} />
 
-        <CardActions>
-          <Badge className={classes.badge} badgeContent={10} color="primary"/>
+        <CardActions >
+          <Badge className={classes.badge} badgeContent={voteScore} color="primary" children="" />
           <IconButton aria-label="Thumbs up">
             <ThumbUp className={classes.thumbUp} />
           </IconButton>
@@ -67,7 +71,7 @@ class PostCard extends Component {
           </IconButton>
           <div className={classes.moveRight} />
           <IconButton aria-label="Click Me">
-            <Link to="/post" >
+            <Link to={"/post/" + id} >
               <Reply className={classes.reply} />
             </Link>
           </IconButton>

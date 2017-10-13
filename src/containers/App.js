@@ -22,12 +22,12 @@ class App extends Component {
           <HomePage />
         )} />
 
-        <Route path='/category' render={() => (
-          <CategoryPage />
+        <Route path='/category/:name' render={(props) => (
+          <CategoryPage {...props} />
         )} />
 
-        <Route path='/post' render={() => (
-          <PostPage />
+        <Route path='/post/:id' render={(props) => (
+          <PostPage {...props}/>
         )} />
 
         <Route path='/edit' render={() => (

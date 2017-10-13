@@ -10,11 +10,17 @@ class CategoryPage extends Component {
   render() {
     return (
       <div>
-        <h2>CategoryPage</h2>
+        <h2>CategoryPage: {this.props.categoryName}</h2>
       </div>
     )
   }
 }
 
+function mapStateToProps(state, ownProps) {
+  return {
+    ...state,
+    categoryName: ownProps.match.params.name
+  }
+}
 
-export default connect()(CategoryPage);
+export default connect(mapStateToProps)(CategoryPage);
