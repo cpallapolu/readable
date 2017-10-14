@@ -1,7 +1,7 @@
 
 import api from '../api';
 
-export const FETCH_CATEGORIES = 'FETCH_CATEGORIES';
+export const FETCH_ALL_CATEGORIES = 'FETCH_ALL_CATEGORIES';
 const fetchCategories = () => (dispatch) => {
   api('/categories', 'GET')
     .then((response) => {
@@ -9,12 +9,20 @@ const fetchCategories = () => (dispatch) => {
     });
 };
 
-export const GET_CATEGORIES = 'GET_CATEGORIES';
+export const GET_ALL_CATEGORIES = 'GET_ALL_CATEGORIES';
 const getCategories = (categories) => {
   return {
-    type: GET_CATEGORIES,
+    type: GET_ALL_CATEGORIES,
     categories
   };
 };
 
-export { fetchCategories }
+export const SET_SELECTED_CATEGORY = 'SET_SELECTED_CATEGORY';
+const setSelectedCategory = (name) => {
+  return {
+    type: SET_SELECTED_CATEGORY,
+    name
+  }
+}
+
+export { fetchCategories, setSelectedCategory }

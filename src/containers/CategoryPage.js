@@ -2,15 +2,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import PostsGrid from '../components/PostsGrid';
+import CategoryGrid from '../components/CategoryGrid';
+
+import { fetchCategoryPosts } from '../state/actions';
+
 class CategoryPage extends Component {
   static propTypes = {
 
   }
 
+  componentWillMount() {
+    this.props.fetchCategoryPosts(this.props.name);
+  }
+
   render() {
+    const { selectedCategory, categories, posts } = this.props;
+
     return (
       <div>
-        <h2>CategoryPage: {this.props.categoryName}</h2>
+        <CategoryGrid categories={categories} selectedCategory={selectedCategory}/>
+
+        <PostsGrid posts={posts} selectedCategory={selectedCategory}/>
       </div>
     )
   }
@@ -18,9 +31,17 @@ class CategoryPage extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    ...state,
-    categoryName: ownProps.match.params.name
+    categories: state.categories.allCategories,
+    selectedCategory: state.categories.selectedCategory.name,
+    posts: state.posts.allPosts,
+    name: ownProps.match.params.name
   }
 }
 
-export default connect(mapStateToProps)(CategoryPage);
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCategoryPosts: (data) => dispatch(fetchCategoryPosts(data))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryPage);

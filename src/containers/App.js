@@ -12,7 +12,13 @@ import CategoryPage from './CategoryPage';
 import PostPage from './PostPage';
 import EditPage from './EditPage';
 
+import { fetchCategories } from '../state/actions';
+
 class App extends Component {
+  componentWillMount() {
+    this.props.fetchCategories();
+  }
+
   render() {
     return (
       <div className="app">
@@ -45,4 +51,10 @@ class App extends Component {
   }
 }
 
-export default withRouter(connect()(App));
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCategories: () => dispatch(fetchCategories())
+  }
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(App));
