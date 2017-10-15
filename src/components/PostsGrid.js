@@ -42,7 +42,7 @@ class PostsGrid extends Component {
   render() {
     const { classes } = this.props;
     const { posts, selectedCategory } = this.props;
-
+console.log('selectedCategory: ', selectedCategory);
     return (
       <div className={classes.postCardDiv}>
         <Grid container className={classes.postCardGrid}>
@@ -71,7 +71,7 @@ class PostsGrid extends Component {
 function mapStateToProps(state, ownProps) {
   return {
     posts: ownProps.posts,
-    selectedCategory: state.categories.selectedCategory.name
+    selectedCategory: ownProps.selectedCategory
   }
 }
 

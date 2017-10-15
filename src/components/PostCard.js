@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedTime } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
 import { grey, red, teal, cyan } from 'material-ui/colors';
-
 import Card, { CardHeader, CardActions, CardContent } from 'material-ui/Card';
 import { Avatar, IconButton, Typography, Badge, Divider } from 'material-ui';
-
 import { ThumbUp, ThumbDown, Reply, ModeComment } from 'material-ui-icons';
+import DeleteIcon from 'material-ui-icons/Delete';
+import ModeEditIcon from 'material-ui-icons/ModeEdit';
 
 import CategoryChip from '../components/CategoryChip';
 
@@ -98,6 +98,13 @@ class PostCard extends Component {
             <ThumbDown className={classes.thumbDown} />
           </IconButton>
           <div className={classes.moveRight} />
+          <div className={classes.moveRight} />
+          <IconButton aria-label="Edit Comment" color="primary">
+            <ModeEditIcon />
+          </IconButton>
+          <IconButton aria-label="Delete Comment" color="accent">
+            <DeleteIcon/>
+          </IconButton>
           <IconButton aria-label="Click Me">
             <Link to={"/post/" + id} >
               <Reply className={classes.reply} />

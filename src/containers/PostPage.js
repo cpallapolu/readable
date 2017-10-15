@@ -52,7 +52,7 @@ class PostPage extends Component {
 
   }
 
-  state = { expanded: false };
+  state = { expanded: true };
 
   componentWillMount() {
     this.props.fetchPost(this.props.postId);
