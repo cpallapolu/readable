@@ -8,7 +8,7 @@ const getCategories = (state, categories) => {
 };
 
 const setSelectedCategory = (state, name) => {
-  const selectedCategory = _.find(state.allCategories, { name });
+  const selectedCategory = _.find(state.allCategories, { name }) || {};
 
   return _.assign({}, state, { selectedCategory });
 }

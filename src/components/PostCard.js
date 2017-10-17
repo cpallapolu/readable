@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedTime } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
@@ -13,9 +14,11 @@ import ModeEditIcon from 'material-ui-icons/ModeEdit';
 
 import CategoryChip from '../components/CategoryChip';
 
+import { votePost, UP, DOWN } from '../state/actions';
+
 const styles = theme => ({
   card: { minWidth: 305, maxWidth: 305 },
-  title: { marginBottom: 16, fontSize: 14, color: theme.palette.text.secondary },
+  title: { marginBottom: 16, color: theme.palette.text.secondary },
   avatar: { color: cyan['A400'] },
   firstDividerColor: { 'background-color': grey[700] },
   secondDividerColor: { 'background-color': grey[700] },
@@ -25,6 +28,7 @@ const styles = theme => ({
   commentsNumBadge: {  },
   thumbDown: { color: red[400] },
   thumbUp: { color: teal[400] },
+  editPost: { color: teal[400] },
   reply: { transform: 'scaleX(-1)', color: grey[50] }
 });
 
@@ -44,9 +48,19 @@ class PostCard extends Component {
     commentsNum: PropTypes.number.isRequired
   }
 
+  state = {
+    editMode: false
+  }
+
+  handleEditClick = () => {
+    this.setState({ editMode: !this.state.editMode });
+  };
+
+
   render() {
     const { classes } = this.props;
     const { id, title, body, author, timestamp, voteScore, category, commentsNum } = this.props;
+    const { selectedCategory, votePost } = this.props
 
     return (
       <Card className={classes.card}>
@@ -66,7 +80,7 @@ class PostCard extends Component {
         <Divider className={classes.firstDividerColor} />
 
         <CardContent>
-          <Typography type="body1" className={classes.title}>
+          <Typography type="title" className={classes.title}>
             {title}
           </Typography>
           <Typography component="p">
@@ -91,19 +105,21 @@ class PostCard extends Component {
 
         <CardActions >
           <IconButton aria-label="Thumbs up">
-            <ThumbUp className={classes.thumbUp} />
+            <ThumbUp className={classes.thumbUp} onClick={() => votePost(id, UP, selectedCategory)} />
           </IconButton>
           <Badge className={classes.voteScoreBadge} badgeContent={voteScore} color="primary" children="" style={{}} />
           <IconButton aria-label="Thumbs Down">
-            <ThumbDown className={classes.thumbDown} />
+            <ThumbDown className={classes.thumbDown} onClick={() => votePost(id, DOWN, selectedCategory)} />
           </IconButton>
           <div className={classes.moveRight} />
           <div className={classes.moveRight} />
           <IconButton aria-label="Edit Comment" color="primary">
-            <ModeEditIcon />
+            <Link to={`/post/edit/${id}` } >
+              <ModeEditIcon className={classes.editPost} />
+            </Link>
           </IconButton>
           <IconButton aria-label="Delete Comment" color="accent">
-            <DeleteIcon/>
+            <DeleteIcon onClick={() => {alert('trying to delete me')}}/>
           </IconButton>
           <IconButton aria-label="Click Me">
             <Link to={"/post/" + id} >
@@ -116,4 +132,16 @@ class PostCard extends Component {
   }
 };
 
-export default withStyles(styles)(PostCard);
+function mapStateToProps(state, ownProps) {
+  return {
+    selectedCategory: state.categories.selectedCategory.name
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    votePost: (postId, upOrDown, category) => dispatch(votePost(postId, upOrDown, category))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PostCard));

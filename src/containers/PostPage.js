@@ -1,26 +1,25 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedTime } from 'react-intl';
-import classnames from 'classnames';
-
 import { withStyles } from 'material-ui/styles';
 import Card, { CardHeader, CardActions, CardContent } from 'material-ui/Card';
 import { Grid, Avatar, IconButton, Typography, Badge, Divider, TextField, Tooltip } from 'material-ui';
 import Collapse from 'material-ui/transitions/Collapse';
 import { ModeComment, ThumbUp, ThumbDown, Send } from 'material-ui-icons';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import DeleteIcon from 'material-ui-icons/Delete';
 import ModeEditIcon from 'material-ui-icons/ModeEdit';
 import { cyan, grey, red, teal } from 'material-ui/colors';
 
 import CategoryChip from '../components/CategoryChip';
+import EditPostForm from '../components/EditPostForm';
 
 import { fetchPost } from '../state/actions';
 
 const styles = theme => ({
-  card: { minWidth: 900, maxWidth: 900, textAlign: 'center' },
-  title: { marginBottom: 16, fontSize: 14, color: theme.palette.text.secondary },
+  card: { minWidth: 900, maxWidth: 900 },
+  title: { marginBottom: 16, color: theme.palette.text.secondary },
   postPageDiv: { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' },
   postPageGrid: { width: '100%', margin: '0px', justifyContent: 'space-around' },
   avatar: { color: cyan['A400'] },
@@ -32,7 +31,7 @@ const styles = theme => ({
   // commentsNumBadge: {  },
   thumbDown: { color: red[400] },
   thumbUp: { color: teal[400] },
-  // reply: { transform: 'scaleX(-1)', color: grey[50] },
+  editPost: { color: teal[400] },
   expand: {
     transform: 'rotate(0deg)',
     transition: theme.transitions.create('transform', {
@@ -64,7 +63,9 @@ class PostPage extends Component {
 
   render() {
     const { classes } = this.props;
-    const { author, title, body, timestamp, category, voteScore, comments } = this.props.post;
+    const { id, author, title, body, timestamp, category, voteScore, comments } = this.props.post;
+    const { editMode } = this.props;
+    console.log(this.props);
 
     return (
       <div className={classes.postPageDiv}>
@@ -90,12 +91,18 @@ class PostPage extends Component {
                 <Divider className={classes.firstDividerColor} />
 
                 <CardContent>
-                  <Typography type="body1" className={classes.title}>
-                    {title}
-                  </Typography>
-                  <Typography component="p">
-                    {body}
-                  </Typography>
+                  {
+                    editMode ?
+                      <EditPostForm id={id} title={title} body={body} /> :
+                      <div>
+                        <Typography type="title" className={classes.title}>
+                          {title}
+                        </Typography>
+                        <Typography component="p">
+                          {body}
+                        </Typography>
+                      </div>
+                  }
                 </CardContent>
 
                 <CardActions>
@@ -111,30 +118,30 @@ class PostPage extends Component {
                 <Divider className={classes.secondDividerColor} />
 
                 <CardActions >
-                  <IconButton aria-label="Thumbs up">
+                  <IconButton aria-label="Thumbs up" disabled={editMode}>
                     <ThumbUp className={classes.thumbUp} />
                   </IconButton>
                   <Badge className={classes.voteScoreBadge} badgeContent={voteScore} color="primary" children="" style={{}} />
-                  <IconButton aria-label="Thumbs Down">
+                  <IconButton aria-label="Thumbs Down" disabled={editMode}>
                     <ThumbDown className={classes.thumbDown} />
                   </IconButton>
                   <div className={classes.moveRight} />
-                  <IconButton
-                    className={classnames(classes.expand, { [classes.expandOpen]: this.state.expanded })}
-                    onClick={this.handleExpandClick}
-                    aria-expanded={this.state.expanded}
-                    aria-label="Show more"
-                  >
-                    <ExpandMoreIcon />
+                  <IconButton aria-label="Edit Comment" color="primary" disabled={editMode}>
+                    <Link to={`/post/edit/${id}` } >
+                      <ModeEditIcon className={classes.editPost} />
+                    </Link>
+                  </IconButton>
+                  <IconButton aria-label="Delete Comment" color="accent">
+                    <DeleteIcon onClick={() => {alert('trying to delete me')}}/>
                   </IconButton>
                 </CardActions>
-                <Collapse in={this.state.expanded} transitionDuration="auto" unmountOnExit>
+                <Collapse in={!editMode} transitionDuration="auto" unmountOnExit>
                   <Divider className={classes.firstDividerColor} />
 
                   <h2>Make Comments...</h2>
 
                   <div>
-                    <TextField multiline={true} rows="10" value="hello type text her"/>
+                    <TextField multiline={true} rows="10" value="hello type text her" fullWidth/>
                     <Tooltip id="tooltip-fab" title="Submit" placement="left">
                       <IconButton aria-label="Submit">
                         <Send className={classes.thumbUp} tooltip="Submit"/>
@@ -146,10 +153,10 @@ class PostPage extends Component {
                   <h2>Comments...</h2>
                   {
                     comments.length && comments.map((comment, index) => (
-                      <div>
+                      <div key={index}>
                         <Divider className={classes.firstDividerColor} />
 
-                        <CardContent key={index} >
+                        <CardContent >
                           <Avatar className={classes.avatar}>{author.match(/\b(\w)/g).join('').toUpperCase()}</Avatar>
                           <Typography paragraph type="body2">
                             {comment.body} {' by '} {comment.author} {' on '}
@@ -194,13 +201,14 @@ class PostPage extends Component {
 function mapStateToProps(state, ownProps) {
   return {
     post: state.posts.selectedPost,
-    postId: ownProps.match.params.id
+    postId: ownProps.id,
+    editMode: ownProps.editMode
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchPost: (data) => dispatch(fetchPost(data))
+    fetchPost: (postId) => dispatch(fetchPost(postId))
   };
 }
 

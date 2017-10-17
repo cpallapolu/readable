@@ -25,6 +25,7 @@ const callApi = (path, method, body = {}) => {
 
   if (!_.isEmpty(body)) {
     completeOptions.body = JSON.stringify(body);
+    completeOptions.headers['Content-Type'] = 'application/json';
   }
 
   return fetch(completeUrl, completeOptions)

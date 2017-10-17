@@ -1,5 +1,6 @@
 
 import _ from 'lodash';
+import uuid from 'uuid/v4';
 
 import api from '../api';
 
@@ -17,7 +18,8 @@ export const FETCH_ALL_POSTS = 'FETCH_ALL_POSTS';
 const fetchPosts = () => (dispatch) => {
   api('/posts', 'GET')
     .then((posts) => {
-      dispatch(getPosts(posts))
+      dispatch(getPosts(posts));
+      dispatch(setSelectedCategory(''));
     });
 };
 
@@ -55,4 +57,52 @@ const getPost = (post) => {
   };
 };
 
-export { fetchPosts, fetchCategoryPosts, fetchPost };
+export const ADD_POST = 'ADD_POST';
+const addPost = (postObj) => (dispatch) => {
+  const additionalPostObj = {
+    id: uuid(),
+    timestamp: new Date()
+  };
+
+  const completePostObj = _.assign(additionalPostObj, postObj);
+
+  api('/posts', 'POST', completePostObj)
+    .then(() => fetchCategoryPosts(postObj.category));
+};
+
+export const VOTE_POST = 'VOTE_POST';
+export const UP = 'UP';
+export const DOWN = 'DOWN';
+const votePost = (postId, upOrDown, category = '') => (dispatch) => {
+  const body = {
+    option: (upOrDown === UP) ? 'upVote' : 'downVote'
+  };
+
+  api(`/posts/${postId}`, 'POST', body)
+    .then(() => {
+      if (category.length) {
+        dispatch(fetchCategoryPosts(category))
+      } else {
+        dispatch(fetchPosts());
+      }
+    });
+};
+
+export const UPDATE_POST = 'UPDATE_POST';
+const updatePost = (postObj, category = '') => (dispatch) => {
+  const body = {
+    title: postObj.title,
+    body: postObj.body
+  };
+
+  api(`/posts/${postObj.id}`, 'PUT', body)
+    .then(() => {
+      if (category.length) {
+        dispatch(fetchCategoryPosts(category))
+      } else {
+        dispatch(fetchPosts());
+      }
+    });
+}
+
+export { fetchPosts, fetchCategoryPosts, fetchPost, addPost, votePost, updatePost };

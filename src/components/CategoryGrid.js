@@ -69,6 +69,7 @@ class CategoryGrid extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
+    selectedCategory: state.categories.selectedCategory.name,
     categories: ownProps.categories
   }
 };

@@ -17,13 +17,13 @@ class CategoryPage extends Component {
   }
 
   render() {
-    const { selectedCategory, categories, posts } = this.props;
+    const { categories, posts } = this.props;
 
     return (
       <div>
-        <CategoryGrid categories={categories} selectedCategory={selectedCategory}/>
+        <CategoryGrid categories={categories} />
 
-        <PostsGrid posts={posts} selectedCategory={selectedCategory}/>
+        <PostsGrid posts={posts} />
       </div>
     )
   }
@@ -32,7 +32,6 @@ class CategoryPage extends Component {
 function mapStateToProps(state, ownProps) {
   return {
     categories: state.categories.allCategories,
-    selectedCategory: state.categories.selectedCategory.name,
     posts: state.posts.allPosts,
     name: ownProps.match.params.name
   }

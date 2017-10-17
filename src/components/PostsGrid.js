@@ -26,7 +26,6 @@ class PostsGrid extends Component {
   };
 
   static PropTypes = {
-    selectedCategory: PropTypes.string.isRequired,
     posts: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
@@ -41,8 +40,8 @@ class PostsGrid extends Component {
 
   render() {
     const { classes } = this.props;
-    const { posts, selectedCategory } = this.props;
-console.log('selectedCategory: ', selectedCategory);
+    const { posts } = this.props;
+
     return (
       <div className={classes.postCardDiv}>
         <Grid container className={classes.postCardGrid}>
@@ -55,7 +54,7 @@ console.log('selectedCategory: ', selectedCategory);
                   body={post.body}
                   author={post.author}
                   timestamp={post.timestamp}
-                  category={!selectedCategory.length ? post.category : ''}
+                  category={post.category}
                   voteScore={post.voteScore}
                   commentsNum={0}
                 />
@@ -70,8 +69,7 @@ console.log('selectedCategory: ', selectedCategory);
 
 function mapStateToProps(state, ownProps) {
   return {
-    posts: ownProps.posts,
-    selectedCategory: ownProps.selectedCategory
+    posts: ownProps.posts
   }
 }
 
