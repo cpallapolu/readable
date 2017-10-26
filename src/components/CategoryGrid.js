@@ -27,11 +27,11 @@ const styles = theme => ({
 
 class CategoryGrid extends Component {
   static defaultProps = {
-    selectedCategory: ''
+    currentCategory: ''
   };
 
   static PropTypes = {
-    selectedCategory: PropTypes.string.isRequired,
+    currentCategory: PropTypes.string.isRequired,
     categories: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
@@ -41,7 +41,7 @@ class CategoryGrid extends Component {
 
   render() {
     const { classes } = this.props;
-    const { categories, selectedCategory } = this.props;
+    const { categories, currentCategory } = this.props;
 
     return (
       <div>
@@ -53,7 +53,7 @@ class CategoryGrid extends Component {
             {
               categories.map((category, index) => (
                 <Grid key={index} item>
-                  <CategoryChip name={category.name} path={category.path} selected={category.name === selectedCategory}/>
+                  <CategoryChip name={category.name} path={category.path} selected={category.name === currentCategory}/>
                 </Grid>
               ))
             }
@@ -69,7 +69,7 @@ class CategoryGrid extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    selectedCategory: state.categories.selectedCategory.name,
+    currentCategory: state.current.category,
     categories: ownProps.categories
   }
 };

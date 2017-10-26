@@ -17,12 +17,4 @@ const getCategories = (categories) => {
   };
 };
 
-export const SET_SELECTED_CATEGORY = 'SET_SELECTED_CATEGORY';
-const setSelectedCategory = (name) => {
-  return {
-    type: SET_SELECTED_CATEGORY,
-    name
-  }
-}
-
-export { fetchCategories, setSelectedCategory }
+export { fetchCategories }

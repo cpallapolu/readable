@@ -25,7 +25,7 @@ const styles = theme => ({
   moveRight: { flex: '1 1 auto' },
   categoryChip: { margin: `0 ${theme.spacing.unit}px` },
   voteScoreBadge: { margin: `0 ${theme.spacing.unit - 1}px` },
-  commentsNumBadge: {  },
+  deleteButton: { margin: `${theme.spacing.unit - 23}px` },
   thumbDown: { color: red[400] },
   thumbUp: { color: teal[400] },
   editPost: { color: teal[400] },
@@ -60,10 +60,10 @@ class PostCard extends Component {
   render() {
     const { classes } = this.props;
     const { id, title, body, author, timestamp, voteScore, category, commentsNum } = this.props;
-    const { selectedCategory, votePost } = this.props
+    const { votePost } = this.props
 
     return (
-      <Card className={classes.card}>
+      <Card className={classes.card} raised>
         <CardHeader
           avatar={
             <Avatar aria-label="Author Titles" className={classes.avatar}>{author.match(/\b(\w)/g).join('').toUpperCase()}</Avatar>
@@ -105,24 +105,23 @@ class PostCard extends Component {
 
         <CardActions >
           <IconButton aria-label="Thumbs up">
-            <ThumbUp className={classes.thumbUp} onClick={() => votePost(id, UP, selectedCategory)} />
+            <ThumbUp className={classes.thumbUp} onClick={() => votePost(id, UP)} />
           </IconButton>
           <Badge className={classes.voteScoreBadge} badgeContent={voteScore} color="primary" children="" style={{}} />
           <IconButton aria-label="Thumbs Down">
-            <ThumbDown className={classes.thumbDown} onClick={() => votePost(id, DOWN, selectedCategory)} />
+            <ThumbDown className={classes.thumbDown} onClick={() => votePost(id, DOWN)} />
           </IconButton>
           <div className={classes.moveRight} />
-          <div className={classes.moveRight} />
           <IconButton aria-label="Edit Comment" color="primary">
-            <Link to={`/post/edit/${id}` } >
+            <Link to={`/post/edit/${id}`} >
               <ModeEditIcon className={classes.editPost} />
             </Link>
           </IconButton>
-          <IconButton aria-label="Delete Comment" color="accent">
+          <IconButton aria-label="Delete Comment" color="accent" className={classes.deleteButton}>
             <DeleteIcon onClick={() => {alert('trying to delete me')}}/>
           </IconButton>
           <IconButton aria-label="Click Me">
-            <Link to={"/post/" + id} >
+            <Link to={`/post/${id}`} >
               <Reply className={classes.reply} />
             </Link>
           </IconButton>
@@ -132,16 +131,10 @@ class PostCard extends Component {
   }
 };
 
-function mapStateToProps(state, ownProps) {
-  return {
-    selectedCategory: state.categories.selectedCategory.name
-  }
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     votePost: (postId, upOrDown, category) => dispatch(votePost(postId, upOrDown, category))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PostCard));
+export default connect(null, mapDispatchToProps)(withStyles(styles)(PostCard));

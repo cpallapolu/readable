@@ -29,14 +29,14 @@ class App extends Component {
         )} />
 
         <Route exact path='/category/:name' render={(props) => (
-          <CategoryPage {...props} />
+          <CategoryPage name={props.match.params.name} />
         )} />
 
         <Route exact path='/post/:id' render={(props) => (
-          <PostPage id={props.match.params.id} editMode={false}/>
+          <PostPage id={props.match.params.id} editMode={false} />
         )} />
         <Route exact path='/post/edit/:id' render={(props) => (
-          <PostPage id={props.match.params.id} editMode={true}/>
+          <PostPage id={props.match.params.id} editMode={true} />
         )} />
 
         <Route exact path='/edit' render={() => (

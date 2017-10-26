@@ -1,21 +1,19 @@
 
 import _ from 'lodash';
 
-import { GET_ALL_POSTS, GET_POST } from '../actions';
+import { GET_POSTS, GET_POST } from '../actions';
 
 const getPosts = (state, posts) => {
-  const activePosts = posts.filter(post => post.deleted === false);
-
-  return _.assign({}, state, { allPosts: activePosts });
+  return _.unionBy([], posts, 'id');
 };
 
 const getPost = (state, post) => {
   return _.assign({}, state, { selectedPost: post });
 };
 
-function posts(state = { allPosts: [], selectedPost: {} }, action) {
+function posts(state = [], action) {
   switch (action.type) {
-    case GET_ALL_POSTS:
+    case GET_POSTS:
       return getPosts(state, action.posts);
     case GET_POST:
       return getPost(state, action.post);

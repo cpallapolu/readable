@@ -9,7 +9,7 @@ import { AppBar, Toolbar, Typography } from 'material-ui';
 import { Copyright } from 'material-ui-icons';
 
 const styles = theme => ({
-  root: { marginTop: theme.spacing.unit * 3, width: '100%', position: 'absolute' },
+  root: { marginTop: theme.spacing.unit * 3, width: '100%', position: 'relative', bottom: 0, left: 0, overflow: 'hidden' },
   flex: { flex: 1, justify: 'center', 'text-align': 'center' },
   copyright: { width: 18, height: 18 }
 });

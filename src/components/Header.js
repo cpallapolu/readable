@@ -12,7 +12,7 @@ import { AppBar, Toolbar, Typography, IconButton, Button } from 'material-ui';
 import { Info } from 'material-ui-icons';
 
 const styles = theme => ({
-  root: { marginTop: theme.spacing.unit * 3, width: '100%' },
+  root: { marginBottom: theme.spacing.unit * 3, width: '100%' },
   flex: { flex: 1 },
   link: { 'text-decoration': 'none' },
   button: { color: grey[50], 'text-transform': 'none', 'font-size': 'larger' },
@@ -33,7 +33,7 @@ class Header extends Component {
     const { classes } = this.props;
 
     return (
-      <div>
+      <div className={classes.root}>
         <AppBar position="static" color="primary">
           <Toolbar>
             <Typography type="title" className={classes.flex}>

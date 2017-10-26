@@ -10,7 +10,7 @@ import { deepOrange } from 'material-ui/colors';
 
 import { Chip } from 'material-ui';
 
-import { fetchCategoryPosts } from '../state/actions';
+import { fetchPosts, setCategory } from '../state/actions';
 
 const styles = theme => ({
   link: { 'text-decoration': 'none' },
@@ -29,28 +29,32 @@ class CategoryChip extends Component {
   };
 
   handleCategoryChipClick() {
-    this.props.fetchCategoryPosts(this.props.name);
+    this.props.setCategory(this.props.name)
+    this.props.fetchPosts(this.props.name);
   }
 
   render() {
     const { classes, path, name, selected } = this.props;
 
     return (
-      <Link to={"/category/" + path} className={classes.link}>
+      <Link to={`/category/${path}`} className={classes.link}>
         <Chip
           className={classes.chip}
           style={selected ? { backgroundColor: deepOrange[500] } : {}}
           label={name}
-          onClick={() => this.handleCategoryChipClick(name) }
+          onClick={() => this.handleCategoryChipClick()}
         />
       </Link>
     )
   }
 };
 
+
+
 function mapDispatchToProps(dispatch) {
   return {
-    fetchCategoryPosts: (data) => dispatch(fetchCategoryPosts(data))
+    fetchPosts: (category) => dispatch(fetchPosts(category)),
+    setCategory: (category) => dispatch(setCategory(category))
   }
 }
 

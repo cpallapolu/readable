@@ -56,7 +56,7 @@ class PostsGrid extends Component {
                   timestamp={post.timestamp}
                   category={post.category}
                   voteScore={post.voteScore}
-                  commentsNum={0}
+                  commentsNum={post.comments.length}
                 />
               </Grid>
             ))

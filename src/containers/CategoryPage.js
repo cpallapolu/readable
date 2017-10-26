@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import PostsGrid from '../components/PostsGrid';
 import CategoryGrid from '../components/CategoryGrid';
 
-import { fetchCategoryPosts } from '../state/actions';
+import { CATEGORY_PAGE } from '../state/actions';
+import { fetchPosts, setPage, setCategory } from '../state/actions';
 
 class CategoryPage extends Component {
   static propTypes = {
@@ -13,7 +14,9 @@ class CategoryPage extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchCategoryPosts(this.props.name);
+    this.props.setPage(CATEGORY_PAGE);
+    this.props.setCategory(this.props.name);
+    this.props.fetchPosts(this.props.name);
   }
 
   render() {
@@ -31,15 +34,17 @@ class CategoryPage extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    categories: state.categories.allCategories,
-    posts: state.posts.allPosts,
-    name: ownProps.match.params.name
+    categories: state.categories,
+    posts: state.posts,
+    name: ownProps.name
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchCategoryPosts: (data) => dispatch(fetchCategoryPosts(data))
+    fetchPosts: (category) => dispatch(fetchPosts(category)),
+    setPage: (page) => dispatch(setPage(page)),
+    setCategory: (category) => dispatch(setCategory(category))
   }
 }
 
