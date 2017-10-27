@@ -5,6 +5,7 @@ import uuid from 'uuid/v4';
 import api from '../api';
 
 import { POST_PAGE } from './';
+import { setPost } from './';
 
 export const GET_POSTS = 'GET_POSTS';
 const getPosts = (posts) => {
@@ -60,7 +61,7 @@ const fetchPost = (postId) => (dispatch) => {
 
             activePost.comments = comments.filter(comment => comment.deleted === false);
 
-            dispatch(getPost(activePost));
+            dispatch(setPost(activePost));
           });
       }
     });
@@ -133,8 +134,12 @@ const getComments = (post) => (dispatch) => {
 };
 
 export const VOTE_COMMENT = 'VOTE_COMMENT';
-const voteComment = (commentId, postId) => (dispatch) => {
-  api(`/comments/${commentId}`, 'POST')
+const voteComment = (commentId, upOrDown, postId) => (dispatch) => {
+  const body = {
+    option: (upOrDown === UP) ? 'upVote' : 'downVote'
+  };
+
+  api(`/comments/${commentId}`, 'POST', body)
     .then(() => dispatch(fetchPost(postId)));
 }
 

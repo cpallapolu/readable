@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import '../styles/App.css';
-
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HomePage from './HomePage';
@@ -47,7 +45,7 @@ class App extends Component {
           <EditPage />
         )} />
 
-        <Footer />
+        {/* <Footer /> */}
 
       </div>
     );

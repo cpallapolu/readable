@@ -15,4 +15,12 @@ const setCategory = (category = '') => {
   }
 };
 
-export { setPage, setCategory };
+export const SET_POST = 'SET_POST';
+const setPost = (post = {}) => {
+  return {
+    type: SET_POST,
+    post
+  }
+};
+
+export { setPage, setCategory, setPost };

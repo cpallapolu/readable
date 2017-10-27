@@ -9,8 +9,8 @@ export const POST_PAGE = 'POST_PAGE';
 export const EDIT_PAGE = 'EDIT_PAGE';
 export const CREATE_PAGE = 'CREATE_PAGE';
 
-export const { SET_PAGE, SET_CATEGORY } = currentActions;
-export const { setPage, setCategory } = currentActions;
+export const { SET_PAGE, SET_CATEGORY, SET_POST } = currentActions;
+export const { setPage, setCategory, setPost } = currentActions;
 
 export const { GET_ALL_CATEGORIES, FETCH_ALL_CATEGORIES } = categoryActions;
 export const { fetchCategories } = categoryActions;

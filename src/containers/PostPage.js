@@ -1,21 +1,23 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+
+import _ from 'lodash';
 import { FormattedDate, FormattedTime } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardHeader, CardActions, CardContent } from 'material-ui/Card';
-import { Grid, Avatar, IconButton, Typography, Badge, Divider, TextField, Tooltip } from 'material-ui';
-import { ModeComment, ThumbUp, ThumbDown, Send, Cancel, AccountCircle } from 'material-ui-icons';
-import DeleteIcon from 'material-ui-icons/Delete';
-import ModeEditIcon from 'material-ui-icons/ModeEdit';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import { Grid, Avatar, IconButton, Divider, TextField, Tooltip } from 'material-ui';
+import { Send, AccountCircle } from 'material-ui-icons';
 import { cyan, grey, red, teal } from 'material-ui/colors';
 
-import CategoryChip from '../components/CategoryChip';
 import EditForm from '../components/EditForm';
+import TitleBody from '../components/TitleBody';
+import VoteEditDelete from '../components/VoteEditDelete';
+import CommentCategory from '../components/CommentCategory';
+import CommentCard from '../components/CommentCard';
 
-import { fetchPost, updatePost } from '../state/actions';
-import { votePost, UP, DOWN } from '../state/actions';
+import { fetchPost, updatePost, setPage } from '../state/actions';
+import { votePost, voteComment, POST_PAGE } from '../state/actions';
 
 const styles = theme => ({
   card: { minWidth: 900, maxWidth: 900 },
@@ -26,32 +28,11 @@ const styles = theme => ({
   firstDividerColor: { 'background-color': grey[700] },
   secondDividerColor: { 'background-color': grey[700] },
   moveRight: { flex: '1 1 auto' },
-  // categoryChip: { margin: `0 ${theme.spacing.unit}px` },
-  // voteScoreBadge: { margin: `0 ${theme.spacing.unit - 1}px` },
-  // commentsNumBadge: {  },
   thumbDown: { color: red[400] },
   thumbUp: { color: teal[400] },
   editMode: { color: teal[400] },
-  expand: {
-    transform: 'rotate(0deg)',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-  flexGrow: {
-    flex: '1 1 auto',
-  },
-  commentField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 700
-  },
-  commentLabel: {
-    fontSize: 18
-  },
+  commentField: { marginLeft: theme.spacing.unit, marginRight: theme.spacing.unit, width: 700 },
+  commentLabel: { fontSize: 18 },
   deleteButton: { margin: `${theme.spacing.unit - 0}px` }
 });
 
@@ -65,6 +46,7 @@ class PostPage extends Component {
   };
 
   componentWillMount() {
+    this.props.setPage(POST_PAGE)
     this.props.fetchPost(this.props.postId);
   }
 
@@ -79,17 +61,16 @@ class PostPage extends Component {
   render() {
     const { classes } = this.props;
     const { id, author, title, body, timestamp, category, voteScore, comments } = this.props.post;
-    const { selectedCategory, editMode } = this.props;
-    const { votePost } = this.props;
+    const { editMode } = this.props;
+    const { votePost, voteComment } = this.props;
     const { commentIdToEdit } = this.state;
 
     const hideLoading = Object.keys(this.props.post).length;
 
-    const avatarImage = author && author.length ? author.match(/\b(\w)/g).join('').toUpperCase() : <AccountCircle />;
+    const avatarImage = author && author.length ? author.match(/\b(\w)/g).slice(0, 2).join('').toUpperCase() : <AccountCircle />;
 
     return (
       <div className={classes.postPageDiv}>
-        <br /><br />
         {
           !hideLoading &&
             <h2>Loading...</h2>
@@ -118,143 +99,52 @@ class PostPage extends Component {
                     {
                       editMode ?
                         <EditForm id={id} title={title} body={body} updatePost={this.props.updatePost}/> :
-                        <div>
-                          <Typography type="title" className={classes.title}>
-                            {title}
-                          </Typography>
-                          <Typography component="p">
-                            {body}
-                          </Typography>
-                        </div>
+                        <TitleBody title={title} body={body} />
                     }
                   </CardContent>
 
-                  <CardActions>
-                    <IconButton aria-label="Click Me" disabled={true}>
-                      <Badge badgeContent={comments ? comments.length : 0} color="accent" >
-                        <ModeComment style={{color: '#ffffff'}}/>
-                      </Badge>
-                    </IconButton>
-                    <div className={classes.moveRight} />
-                    <CategoryChip style={{color: grey[500]}} className={classes.categoryChip} name={category} path={category} />
-                  </CardActions>
+                  <CommentCategory commentsNum={comments.length} category={category} />
 
                   <Divider className={classes.secondDividerColor} />
 
-                  <CardActions >
-                    <IconButton aria-label="Thumbs up" disabled={editMode}>
-                      <ThumbUp className={classes.thumbUp} onClick={() => votePost(id, UP, selectedCategory)} />
-                    </IconButton>
-                    <Badge className={classes.voteScoreBadge} badgeContent={voteScore} color="primary" children="" style={{}} />
-                    <IconButton aria-label="Thumbs Down" disabled={editMode}>
-                      <ThumbDown className={classes.thumbDown} onClick={() => votePost(id, DOWN, selectedCategory)} />
-                    </IconButton>
-                    <div className={classes.moveRight} />
-                    {
-                      editMode ?
-                        <Tooltip id="tooltip-fab" title="Cancel" placement="top">
-                          <Link to={`/post/${id}`} >
-                            <IconButton aria-label="Cancel" color="primary" >
-                              <Cancel />
-                            </IconButton>
-                          </Link>
-                        </Tooltip> :
-                        <Link to={`/post/edit/${id}`} >
-                          <IconButton aria-label="Edit Comment" color="primary" >
-                            <ModeEditIcon className={classes.editMode} />
-                          </IconButton>
-                        </Link>
-                    }
-                    <IconButton aria-label="Delete Post" color="accent" className={classes.deleteButton}>
-                      <DeleteIcon onClick={() => {alert('trying to delete me')}}/>
-                    </IconButton>
-                  </CardActions>
+                  <VoteEditDelete id={id} voteScore={voteScore} editMode={editMode} voteUpOrDown={votePost} />
+
                   <Divider className={classes.firstDividerColor}/>
 
                   {
-                    !editMode &&
-                    <div>
-                      <CardContent>
-                        {
-                          !comments.length ?
-                            <CardContent>
-                              <Typography paragraph type="body2">
-                                Be the first one to comment
-                              </Typography>
-                            </CardContent> :
-                            comments.map((comment, index) => (
-                              <div key={index}>
-                                <CardContent >
-                                  <div style={{width:'60px', float:'left'}}>
-                                    <Avatar className={classes.avatar}>{author.match(/\b(\w)/g).join('').toUpperCase()}</Avatar>
-                                  </div>
-                                  <div>
-                                    <Typography paragraph type="body2">
-                                      {comment.author}<br/>
-                                      <FormattedDate value={timestamp} day="numeric" month="long" year="numeric" />{ ' at ' }
-                                      <FormattedTime value={timestamp} hour="numeric" minute="numeric" />
-                                    </Typography>
-                                  </div>
-                                  <div>
-                                    {comment.id === commentIdToEdit ?
-                                      <EditForm id={comment.id} body={comment.body} updatePost={this.props.updateComment}/> :
-                                      <Typography paragraph type="body2">
-                                        {comment.body}<br/>
-                                      </Typography>
-                                    }
-                                  </div>
-                                </CardContent>
-                                <CardActions >
-                                  <IconButton aria-label="Thumbs up" disabled={editMode} >
-                                    <ThumbUp className={classes.thumbUp} />
-                                  </IconButton>
-                                  <Badge className={classes.voteScoreBadge} badgeContent={comment.voteScore} color="primary" children="" style={{}} />
-                                  <IconButton aria-label="Thumbs Down" disabled={editMode} >
-                                    <ThumbDown className={classes.thumbDown} />
-                                  </IconButton>
-                                  <div className={classes.moveRight} />
-                                  {
-                                    comment.id === this.state.commentIdToEdit ?
-                                      <Tooltip id="tooltip-fab" title="Cancel" placement="top">
-                                        <IconButton aria-label="Cancel" color="primary" onClick={() => this.handleCancelEditComment()}>
-                                          <Cancel />
-                                        </IconButton>
-                                      </Tooltip> :
-                                      <IconButton aria-label="Edit Comment" color="primary" onClick={() => this.handleEditComment(comment.id)}>
-                                        <ModeEditIcon />
-                                      </IconButton>
-                                  }
-                                  <IconButton aria-label="Delete Comment" color="accent" disabled={editMode} >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </CardActions>
-
-                                <Divider className={classes.firstDividerColor} />
-                              </div>
-                            ))
-                        }
-                      </CardContent>
-                      <CardContent>
-                        <div>
-                          <TextField
-                            className={classes.commentField}
-                            labelClassName={classes.commentLabel}
-                            label="Start Comment Here"
-                            placeholder="Start Comment here"
-                            multiline
-                            rows="3"
-                            fullWidth
-                            onChange={() => {}}
-                          />
-                          <Tooltip id="tooltip-fab" title="Submit" placement="top">
-                            <IconButton type="submit" aria-label="Submit" style={{float: 'right'}} >
-                              <Send className={classes.send} tooltip="Submit"/>
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      </CardContent>
-                    </div>
+                    comments.map((comment) => (
+                      <CommentCard
+                        key={comment.id}
+                        id={comment.id}
+                        author={comment.author}
+                        body={comment.body}
+                        timestamp={comment.timestamp}
+                        voteScore={comment.voteScore}
+                        editMode={comment.id === commentIdToEdit}
+                        voteComment={_.partialRight(voteComment, id)}
+                      />
+                    ))
                   }
+
+                  <CardContent>
+                    <div>
+                      <TextField
+                        className={classes.commentField}
+                        labelClassName={classes.commentLabel}
+                        label="Start Comment Here"
+                        placeholder="Start Comment here"
+                        multiline
+                        rows="3"
+                        fullWidth
+                        onChange={() => {}}
+                      />
+                      <Tooltip id="tooltip-fab" title="Submit" placement="top">
+                        <IconButton type="submit" aria-label="Submit" style={{float: 'right'}} >
+                          <Send className={classes.send} tooltip="Submit"/>
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  </CardContent>
                 </Card>
               </Grid>
             </Grid>
@@ -266,8 +156,7 @@ class PostPage extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    selectedCategory: state.categories.selectedCategory.name,
-    post: state.posts.selectedPost,
+    post: state.current.post,
     postId: ownProps.id,
     editMode: ownProps.editMode
   }
@@ -275,10 +164,12 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    setPage: (page) => dispatch(setPage(page)),
     fetchPost: (postId) => dispatch(fetchPost(postId)),
-    votePost: (postId, upOrDown, category) => dispatch(votePost(postId, upOrDown, category)),
+    votePost: (postId, upOrDown) => dispatch(votePost(postId, upOrDown)),
     updatePost: (postObj, category) => dispatch(updatePost(postObj, category)),
     deletePost: (postObj, category) => dispatch(updatePost(postObj, category)),
+    voteComment: (commentId, upOrDown, postId) => dispatch(voteComment(commentId, upOrDown, postId)),
     updateComment: (postObj, category) => dispatch(updatePost(postObj, category)),
     deleteComment: (postObj, category) => dispatch(updatePost(postObj, category))
   };
