@@ -8,16 +8,8 @@ import { Grid } from 'material-ui';
 import PostCard from './PostCard';
 
 const styles = theme => ({
-  postCardDiv: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap'
-  },
-  postCardGrid: {
-    width: '100%',
-    margin: '0px',
-    justifyContent: 'space-around'
-  }
+  postCardDiv: { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' },
+  postCardGrid: { width: '100%', margin: '0px', justifyContent: 'space-around' }
 });
 
 class PostsGrid extends Component {

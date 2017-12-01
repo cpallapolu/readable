@@ -2,23 +2,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import { CardActions } from 'material-ui/Card';
-import { IconButton, Badge } from 'material-ui';
+import { IconButton, Avatar } from 'material-ui';
 import { ThumbUp, ThumbDown } from 'material-ui-icons';
 import { red, teal } from 'material-ui/colors';
 
 import { UP, DOWN } from '../state/actions';
 
-import EditDelete from './EditDelete';
-
 const styles = theme => ({
-  voteScoreBadge: { margin: `0 ${theme.spacing.unit - 1}px` },
+  voteScoreBadge: { width: '24px', height: '24px', fontSize: '0.75rem', marginTop: '12px', backgroundColor: '#2196f3', color: 'rgba(255, 255, 255, 1)' },
   thumbDown: { color: red[400] },
   thumbUp: { color: teal[400] },
-  moveRight: { flex: '1 1 auto' }
+  row: { display: 'flex', justifyContent: 'center' }
 });
 
-class VoteEditDelete extends Component {
+class Vote extends Component {
   static defaultProps = {
 
   };
@@ -36,21 +33,17 @@ class VoteEditDelete extends Component {
     const { voteUpOrDown } = this.props;
 
     return (
-      <CardActions>
+      <div className={classes.row}>
         <IconButton aria-label="Thumbs up" disabled={editMode}>
           <ThumbUp className={classes.thumbUp} onClick={() => voteUpOrDown(id, UP)} />
         </IconButton>
-        <Badge className={classes.voteScoreBadge} badgeContent={voteScore} color="primary" children="" style={{}} />
+        <Avatar className={classes.voteScoreBadge} color="primary">{voteScore}</Avatar>
         <IconButton aria-label="Thumbs Down" disabled={editMode}>
           <ThumbDown className={classes.thumbDown} onClick={() => voteUpOrDown(id, DOWN)} />
         </IconButton>
-
-        <div className={classes.moveRight} />
-
-        <EditDelete postId={id} editMode={editMode} />
-      </CardActions>
+      </div>
     )
   };
 }
 
-export default (withStyles(styles)(VoteEditDelete));
+export default withStyles(styles)(Vote);

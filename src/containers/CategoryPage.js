@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import PostsGrid from '../components/PostsGrid';
 import CategoryGrid from '../components/CategoryGrid';
@@ -10,7 +11,11 @@ import { fetchPosts, setPage, setCategory } from '../state/actions';
 
 class CategoryPage extends Component {
   static propTypes = {
-
+    categories: PropTypes.array.isRequired,
+    posts: PropTypes.array.isRequired,
+    setPage: PropTypes.func.isRequired,
+    setCategory: PropTypes.func.isRequired,
+    fetchPosts: PropTypes.func.isRequired
   }
 
   componentWillMount() {

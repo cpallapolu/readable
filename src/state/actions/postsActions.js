@@ -4,8 +4,24 @@ import uuid from 'uuid/v4';
 
 import api from '../api';
 
-import { POST_PAGE } from './';
-import { setPost } from './';
+import { POST_PAGE, HOME_PAGE,CATEGORY_PAGE } from './';
+import { setPost, setCommentId, setCurrentEditingPostId, setRedirect } from './';
+
+const dispatchBasedOnPage = (args, dispatch) => {
+  const { page } = args;
+
+  if (page === POST_PAGE) {
+    dispatch(fetchPost(args.postId));
+  }
+
+  if (page === HOME_PAGE) {
+    dispatch(fetchPosts());
+  }
+
+  if (page === CATEGORY_PAGE) {
+    dispatch(fetchPosts(args.category));
+  }
+};
 
 export const GET_POSTS = 'GET_POSTS';
 const getPosts = (posts) => {
@@ -54,7 +70,12 @@ export const FETCH_POST = 'FETCH_POST';
 const fetchPost = (postId) => (dispatch) => {
   api(`/posts/${postId}`, 'GET')
     .then((post) => {
-      if (!_.get(post, 'deleted')) {
+      if (_.isEmpty(post)) {
+        dispatch(setRedirect(true));
+        dispatch(setPost(post));
+      }
+
+      if (!_.isEmpty(post) && !_.get(post, 'deleted')) {
         api(`/posts/${postId}/comments`, 'GET')
           .then((comments) => {
             const activePost = _.clone(post);
@@ -71,7 +92,7 @@ export const ADD_POST = 'ADD_POST';
 const addPost = (postObj) => (dispatch) => {
   const additionalPostObj = {
     id: uuid(),
-    timestamp: new Date()
+    timestamp: new Date().getTime()
   };
 
   const completePostObj = _.assign(additionalPostObj, postObj);
@@ -88,37 +109,67 @@ const votePost = (postId, upOrDown) => (dispatch, getState) => {
     option: (upOrDown === UP) ? 'upVote' : 'downVote'
   };
 
-  const { current } = getState();
-
   api(`/posts/${postId}`, 'POST', body)
     .then(() => {
-      if (current.page === POST_PAGE) {
-        dispatch(fetchPost(postId));
-      } else {
-        dispatch(fetchPosts(current.category));
-      }
+      const { current } = getState();
+
+      const args = {
+        page: current.page,
+        category: current.category,
+        postId: postId
+      };
+
+      dispatchBasedOnPage(args, dispatch);
     });
 };
 
 export const UPDATE_POST = 'UPDATE_POST';
-const updatePost = (postObj, category = '') => (dispatch) => {
+const updatePost = (postObj) => (dispatch, getState) => {
   const body = {
     title: postObj.title,
     body: postObj.body
   };
 
+  const { current } = getState();
+
   api(`/posts/${postObj.id}`, 'PUT', body)
     .then(() => {
-      dispatch(fetchPost(postObj.id));
+      dispatch(setCurrentEditingPostId(false));
+
+      const args = {
+        page: current.page,
+        category: current.category,
+        postId: postObj.id
+      };
+
+      dispatchBasedOnPage(args, dispatch);
     });
 }
 
 export const DELETE_POST = 'DELETE_POST';
-const deletePost = (postId) => (dispatch) => {
-  api(`/posts/${postId}`, 'DELETE')
+const deletePost = (postId) => (dispatch, getState) => {
+  const { current } = getState();
+
+  const currPostId = _.get(current, 'post.id', postId);
+
+  api(`/posts/${currPostId}`, 'DELETE')
     .then(() => {
-      dispatch(fetchPosts());
+      const args = {
+        page: CATEGORY_PAGE,
+        category: current.category
+      };
+
+      dispatchBasedOnPage(args, dispatch);
     });
+};
+
+export const SORT_POSTS = 'SORT_POSTS';
+const sortPosts = (type, order) => (dispatch, getState) => {
+  const { posts } = getState();
+
+  const sortedPosts = _.orderBy(posts, [type], [order]);
+
+  dispatch(getPosts(sortedPosts));
 };
 
 export const GET_COMMENTS = 'GET_COMMENTS';
@@ -143,21 +194,47 @@ const voteComment = (commentId, upOrDown, postId) => (dispatch) => {
     .then(() => dispatch(fetchPost(postId)));
 }
 
+export const ADD_COMMENT = 'ADD_COMMENT';
+const addComment = (body) => (dispatch, getState) => {
+  const { current } = getState();
+  const postId = current.post.id;
+
+  const commentObj = {
+    id: uuid(),
+    timestamp: new Date().getTime(),
+    body,
+    author: current.author || 'Test User',
+    parentId: postId
+  };
+
+  api('/comments/', 'POST', commentObj)
+    .then(() => dispatch(fetchPost(postId)));
+}
+
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
-const updateComment = (commentObj) => (dispatch) => {
+const updateComment = (commentObj) => (dispatch, getState) => {
   const body = {
-    timestamp: new Date(),
+    timestamp: new Date().getTime(),
     body: commentObj.body
   };
 
+  const { current } = getState();
+
   api(`/comments/${commentObj.id}`, 'PUT', body)
-    .then(() => dispatch(fetchPost(commentObj.parentId)));
+    .then(() => {
+      dispatch(fetchPost(current.post.id));
+      dispatch(setCommentId(''));
+    });
 };
 
 export const DELETE_COMMENT = 'DELETE_COMMENT';
-const deleteComment = (commentId, postId) => (dispatch) => {
+const deleteComment = (commentId) => (dispatch, getState) => {
   api(`/comments/${commentId}`, 'DELETE')
-    .then(() => dispatch(fetchPost(postId)));
+    .then(() => {
+      const { current } = getState();
+
+      dispatch(fetchPost(current.post.id));
+    });
 }
 
 
@@ -168,8 +245,10 @@ export {
   votePost,
   updatePost,
   deletePost,
+  sortPosts,
   getComments,
   voteComment,
+  addComment,
   updateComment,
   deleteComment
 };

@@ -5,22 +5,23 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { FormattedDate, FormattedTime } from 'react-intl';
 import { withStyles } from 'material-ui/styles';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
 import { Grid, Avatar, IconButton, Divider, TextField, Tooltip } from 'material-ui';
 import { Send, AccountCircle } from 'material-ui-icons';
 import { cyan, grey, red, teal } from 'material-ui/colors';
 
-import EditForm from '../components/EditForm';
+import EditDeletePost from '../components/EditDeletePost';
 import TitleBody from '../components/TitleBody';
-import VoteEditDelete from '../components/VoteEditDelete';
+import Vote from '../components/Vote';
 import CommentCategory from '../components/CommentCategory';
 import CommentCard from '../components/CommentCard';
+import CustomDialog from '../components/CustomDialog';
 
-import { fetchPost, updatePost, setPage } from '../state/actions';
-import { votePost, voteComment, POST_PAGE } from '../state/actions';
+import { fetchPost, updatePost, setPage, setCategory } from '../state/actions';
+import { addComment, votePost, voteComment, POST_PAGE } from '../state/actions';
 
 const styles = theme => ({
-  card: { minWidth: 900, maxWidth: 900 },
+  card: { minWidth: 900 },
   title: { marginBottom: 16, color: theme.palette.text.secondary },
   postPageDiv: { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' },
   postPageGrid: { width: '100%', margin: '0px', justifyContent: 'space-around' },
@@ -42,28 +43,33 @@ class PostPage extends Component {
   }
 
   state = {
-    commentIdToEdit: ''
+    commentBody: ''
   };
 
   componentWillMount() {
-    this.props.setPage(POST_PAGE)
+    this.props.setPage(POST_PAGE);
     this.props.fetchPost(this.props.postId);
   }
 
-  handleEditComment = (commentIdToEdit) => {
-    this.setState({ commentIdToEdit });
+  componentWillReceiveProps(nextProps) {
+    this.props.setCategory(nextProps.post.category);
+  }
+
+  handleAddComment = (e) => {
+    this.setState({ commentBody: e.target.value });
   };
 
-  handleCancelEditComment = () => {
-    this.setState({ commentIdToEdit: '' });
+  handleSubmitComment = () => {
+    this.props.addComment(this.state.commentBody);
+    this.setState({ commentBody: '' });
   };
 
   render() {
     const { classes } = this.props;
     const { id, author, title, body, timestamp, category, voteScore, comments } = this.props.post;
-    const { editMode } = this.props;
+    const { currentEditingPostId, doRedirect } = this.props;
     const { votePost, voteComment } = this.props;
-    const { commentIdToEdit } = this.state;
+    const { commentBody } = this.state;
 
     const hideLoading = Object.keys(this.props.post).length;
 
@@ -71,10 +77,8 @@ class PostPage extends Component {
 
     return (
       <div className={classes.postPageDiv}>
-        {
-          !hideLoading &&
-            <h2>Loading...</h2>
-        }
+        { !hideLoading && !doRedirect && <h2>Loading...</h2> }
+        { !hideLoading && doRedirect && <CustomDialog open={true} title={'The requested post is deleted'} contentText={'Please select on the below options'}/>}
         {
           hideLoading &&
             <Grid container className={classes.postPageGrid}>
@@ -96,18 +100,20 @@ class PostPage extends Component {
                   <Divider className={classes.firstDividerColor} />
 
                   <CardContent>
-                    {
-                      editMode ?
-                        <EditForm id={id} title={title} body={body} updatePost={this.props.updatePost}/> :
-                        <TitleBody title={title} body={body} />
-                    }
+                    <TitleBody editMode={currentEditingPostId === id} id={id} title={title} body={body} update={this.props.updatePost} />
                   </CardContent>
 
                   <CommentCategory commentsNum={comments.length} category={category} />
 
                   <Divider className={classes.secondDividerColor} />
 
-                  <VoteEditDelete id={id} voteScore={voteScore} editMode={editMode} voteUpOrDown={votePost} />
+                  <CardActions>
+                    <Vote id={id} voteScore={voteScore} editMode={currentEditingPostId} voteUpOrDown={votePost} />
+
+                    <div className={classes.moveRight} />
+
+                    <EditDeletePost postId={id} inEditMode={currentEditingPostId} />
+                  </CardActions>
 
                   <Divider className={classes.firstDividerColor}/>
 
@@ -116,11 +122,11 @@ class PostPage extends Component {
                       <CommentCard
                         key={comment.id}
                         id={comment.id}
+                        postId={id}
                         author={comment.author}
                         body={comment.body}
                         timestamp={comment.timestamp}
                         voteScore={comment.voteScore}
-                        editMode={comment.id === commentIdToEdit}
                         voteComment={_.partialRight(voteComment, id)}
                       />
                     ))
@@ -131,16 +137,16 @@ class PostPage extends Component {
                       <TextField
                         className={classes.commentField}
                         labelClassName={classes.commentLabel}
+                        value={this.state.commentBody}
                         label="Start Comment Here"
                         placeholder="Start Comment here"
-                        multiline
                         rows="3"
                         fullWidth
-                        onChange={() => {}}
+                        onChange={(e) => this.handleAddComment(e)}
                       />
                       <Tooltip id="tooltip-fab" title="Submit" placement="top">
-                        <IconButton type="submit" aria-label="Submit" style={{float: 'right'}} >
-                          <Send className={classes.send} tooltip="Submit"/>
+                        <IconButton type="submit" aria-label="Submit" style={{float: 'right'}} disabled={commentBody.length === 0} >
+                          <Send className={classes.send} onClick={() => this.handleSubmitComment()} />
                         </IconButton>
                       </Tooltip>
                     </div>
@@ -157,6 +163,8 @@ class PostPage extends Component {
 function mapStateToProps(state, ownProps) {
   return {
     post: state.current.post,
+    currentEditingPostId: state.current.currentEditingPostId,
+    doRedirect: state.current.doRedirect,
     postId: ownProps.id,
     editMode: ownProps.editMode
   }
@@ -168,10 +176,9 @@ function mapDispatchToProps(dispatch) {
     fetchPost: (postId) => dispatch(fetchPost(postId)),
     votePost: (postId, upOrDown) => dispatch(votePost(postId, upOrDown)),
     updatePost: (postObj, category) => dispatch(updatePost(postObj, category)),
-    deletePost: (postObj, category) => dispatch(updatePost(postObj, category)),
+    setCategory: (category) => dispatch(setCategory(category)),
     voteComment: (commentId, upOrDown, postId) => dispatch(voteComment(commentId, upOrDown, postId)),
-    updateComment: (postObj, category) => dispatch(updatePost(postObj, category)),
-    deleteComment: (postObj, category) => dispatch(updatePost(postObj, category))
+    addComment: (postObj, category) => dispatch(addComment(postObj, category))
   };
 }
 

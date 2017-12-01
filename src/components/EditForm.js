@@ -1,36 +1,17 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { TextField, Tooltip, IconButton } from 'material-ui';
 import { red } from 'material-ui/colors';
 import { Send } from 'material-ui-icons';
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  titleField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 700
-  },
-  bodyField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 700
-  },
-  titleLabel: {
-    fontSize: 18
-  },
-  bodyLabel: {
-    fontSize: 18
-  },
-  send: {
-    color: red[500]
-  }
+  titleField: { marginLeft: theme.spacing.unit, marginRight: theme.spacing.unit, width: 700 },
+  bodyField: { marginLeft: theme.spacing.unit, marginRight: theme.spacing.unit, width: 700 },
+  titleLabel: { fontSize: 18 },
+  bodyLabel: { fontSize: 18 },
+  send: { color: red[500] }
 });
 
 class EditForm extends Component {
@@ -40,14 +21,12 @@ class EditForm extends Component {
 
   static PropTypes = {
     id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     body: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
-    updatePost: PropTypes.func.isRequired
+    update: PropTypes.func.isRequired
   };
 
   state = {
-    fireRedirect: false,
     id: this.props.id,
     title: this.props.title,
     body: this.props.body
@@ -64,22 +43,15 @@ class EditForm extends Component {
 
     const { id, title, body } = this.state;
 
-    this.props.updatePost({ id, title, body }, this.props.category);
-
-    this.setState({ fireRedirect: true })
+    this.props.update({ id, title, body });
   }
 
   render() {
     const { classes } = this.props;
-    const { id, title, body } = this.state;
-    const { fireRedirect } = this.state;
+    const { title, body } = this.state;
 
     return (
       <div>
-        {fireRedirect && (
-          <Redirect to={`/post/${id}`}/>
-        )}
-
         <form onSubmit={(e) => this.handleSubmit(e)} noValidate autoComplete="off">
           { title &&
             <div>
@@ -117,4 +89,4 @@ class EditForm extends Component {
   };
 }
 
-export default withStyles(styles)(EditForm);
+export default (withStyles(styles)(EditForm));

@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import SetName from '../components/SetName';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HomePage from './HomePage';
 import CategoryPage from './CategoryPage';
 import PostPage from './PostPage';
-import EditPage from './EditPage';
+import NewPostPage from './NewPostPage';
 
 import { fetchCategories } from '../state/actions';
 
@@ -18,8 +19,12 @@ class App extends Component {
   }
 
   render() {
+    const { currentEditingPostId } = this.props;
+
     return (
       <div className="app">
+        <SetName open={!this.props.name.length} />
+
         <Header />
 
         <Route exact path='/' render={() => (
@@ -31,18 +36,11 @@ class App extends Component {
         )} />
 
         <Route exact path='/post/:id' render={(props) => (
-          <PostPage id={props.match.params.id} editMode={false} />
-        )} />
-        <Route exact path='/post/edit/:id' render={(props) => (
-          <PostPage id={props.match.params.id} editMode={true} />
+          <PostPage id={props.match.params.id} editMode={currentEditingPostId} />
         )} />
 
-        <Route exact path='/edit' render={() => (
-          <EditPage />
-        )} />
-
-        <Route exact path='/info' render={() => (
-          <EditPage />
+        <Route exact path='/create' render={() => (
+          <NewPostPage />
         )} />
 
         {/* <Footer /> */}
@@ -52,10 +50,17 @@ class App extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    name: state.current.name,
+    iEditingPost: state.current.currentEditingPostId
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     fetchCategories: () => dispatch(fetchCategories())
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
