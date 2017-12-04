@@ -25,16 +25,32 @@ class EditDeletePost extends Component {
     this.props.setCurrentEditingPostId(postId);
   };
 
+  state = {
+    doRedirect: false,
+    to: '/'
+  };
+
+  handleDeletePost(postId) {
+    this.props.deletePost(postId);
+
+    const { category } = this.props;
+
+    this.setState({ doRedirect: true, to: category ? `/category/${category}` : '/' });
+  }
+
   render() {
     const { classes } = this.props;
     const { redirectToEditPost } = this.props;
-    const { deletePost } = this.props;
-    const { currentEditingPostId, postId } = this.props;
+    const { currentEditingPostId, postId, category } = this.props;
+    const { doRedirect, to } = this.state;
 
     return (
       <div>
         {
           redirectToEditPost && <Redirect to={`/post/${postId}`}/>
+        }
+        {
+          doRedirect && <Redirect to={to}/>
         }
         {
           currentEditingPostId === postId ?
@@ -51,7 +67,7 @@ class EditDeletePost extends Component {
         }
         <Tooltip id="tooltip-fab" title="Delete" placement="top">
           <IconButton aria-label="Delete Post" color="accent" className={classes.deleteButton}>
-            <DeleteIcon onClick={() => deletePost(postId)}/>
+            <DeleteIcon onClick={() => this.handleDeletePost(postId)}/>
           </IconButton>
         </Tooltip>
       </div>
@@ -63,7 +79,8 @@ class EditDeletePost extends Component {
 function mapStateToProps(state, ownProps) {
   return {
     ...ownProps,
-    currentEditingPostId: state.current.currentEditingPostId
+    currentEditingPostId: state.current.currentEditingPostId,
+    category: state.current.category
   }
 }
 

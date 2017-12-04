@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "material-ui": "^1.0.0-beta.21",
+    "material-ui": "^1.0.0-beta.22",
     "material-ui-icons": "^1.0.0-beta.15",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",

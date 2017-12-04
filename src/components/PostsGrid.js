@@ -6,6 +6,7 @@ import { withStyles } from 'material-ui/styles';
 import { Grid } from 'material-ui';
 
 import PostCard from './PostCard';
+import NoPosts from './NoPosts';
 
 const styles = theme => ({
   postCardDiv: { display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' },
@@ -36,6 +37,9 @@ class PostsGrid extends Component {
 
     return (
       <div className={classes.postCardDiv}>
+        {
+          posts.length === 0 && <NoPosts />
+        }
         <Grid container className={classes.postCardGrid}>
           {
             posts.map((post, index) => (

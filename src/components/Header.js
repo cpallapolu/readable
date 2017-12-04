@@ -15,7 +15,7 @@ const styles = theme => ({
   infoButton: { color: grey[50], width: '36px', height: '36px' },
   createButton: { color: red[500], width: '36px', height: '36px', marginRight: '6px'  },
   menuButton: { marginLeft: -12, marginRight: 20 },
-  info: { color: grey[50], width: '25px', height: '25px', justifyContent: 'center' }
+  info: { color: grey[50], width: '25px', height: '25px', justifyContent: 'center', marginTop: '5px' }
 });
 
 class Header extends Component {
@@ -36,7 +36,7 @@ class Header extends Component {
           <Toolbar>
             <Typography type="title" className={classes.flex}>
               <Link to="/" className={classes.link}>
-                <Button className={classes.button}> Readable </Button>
+                <Button > Readable </Button>
               </Link>
             </Typography>
             <Tooltip id="tooltip-fab" title="Create New Post" placement="bottom">

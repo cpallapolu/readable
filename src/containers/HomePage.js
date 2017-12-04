@@ -30,14 +30,9 @@ class HomePage extends Component {
 
     return (
       <div>
-        {
-          !posts.length ? <h2>Loading...</h2> :
-            <div>
-              <CategoryGrid categories={categories} />
+        <CategoryGrid categories={categories} />
 
-              <PostsGrid posts={posts} />
-            </div>
-        }
+        <PostsGrid posts={posts} />
       </div>
     )
   }

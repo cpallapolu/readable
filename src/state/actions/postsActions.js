@@ -154,8 +154,9 @@ const deletePost = (postId) => (dispatch, getState) => {
 
   api(`/posts/${currPostId}`, 'DELETE')
     .then(() => {
+      console.log('current: ', current.page);
       const args = {
-        page: CATEGORY_PAGE,
+        page: current.page === POST_PAGE ? CATEGORY_PAGE : current.page,
         category: current.category
       };
 
