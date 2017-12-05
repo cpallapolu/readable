@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import SetName from '../components/SetName';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 import HomePage from './HomePage';
 import CategoryPage from './CategoryPage';
 import PostPage from './PostPage';
@@ -42,9 +41,6 @@ class App extends Component {
         <Route exact path='/create' render={() => (
           <NewPostPage />
         )} />
-
-        {/* <Footer /> */}
-
       </div>
     );
   }

@@ -31,7 +31,6 @@ class CommentCard extends Component {
   static PropTypes = {
     author: PropTypes.string.isRequired,
     timestamp: PropTypes.number.isRequired,
-    editMode: PropTypes.bool.isRequired,
     id: PropTypes.string.isRequired,
     postId: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
@@ -42,7 +41,7 @@ class CommentCard extends Component {
 
   render() {
     const { classes } = this.props;
-    const { author, timestamp, editMode, body, id, postId } = this.props;
+    const { author, timestamp, body, id, postId } = this.props;
     const { voteScore } = this.props;
     const { updateComment, voteComment } = this.props;
     const { commentId } = this.props
