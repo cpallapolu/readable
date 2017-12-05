@@ -10,9 +10,6 @@ Users will also be able to edit and delete posts and comments.
 - install all project dependencies with `npm install`
 - start the development server with `npm start`
 
-
-You can also view the code on heroku app. [Readable](https://cpallapolu-myreads.herokuapp.com/)
-
 ## Contributors
 [Chanakya Pallapolu](https://github.com/cpallapolu)
 
