@@ -14,6 +14,7 @@ class CategoryOrPostPage extends Component {
   };
 
   static PropTypes = {
+    category: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     editMode: PropTypes.string.isRequired
   };

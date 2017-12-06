@@ -29,8 +29,8 @@ class App extends Component {
           <HomePage />
         )} />
 
-        <Route exact path='/category/:name' render={(props) => (
-          <CategoryOrPostPage name={props.match.params.name} editMode={currentEditingPostId} />
+        <Route exact path='/:category/:name' render={(props) => (
+          <CategoryOrPostPage category={props.match.params.category} name={props.match.params.name} editMode={currentEditingPostId} />
         )} />
 
         <Route exact path='/create' render={() => (

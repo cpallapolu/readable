@@ -35,6 +35,8 @@ class NewPostPage extends Component {
   state = {
     disableSubmit: true,
     fireRedirect: false,
+    id: '',
+    category: '',
     errors: {
       author: false,
       title: false,
@@ -69,11 +71,13 @@ class NewPostPage extends Component {
 
     const id = uuid();
 
+    const { category } = this.state.formValues;
+
     const postObj = _.assign({ id }, this.state.formValues);
 
     this.props.addPost(postObj);
 
-    this.setState({ fireRedirect: true, id });
+    this.setState({ fireRedirect: true, id, category });
   }
 
   render() {
@@ -81,12 +85,12 @@ class NewPostPage extends Component {
     const { categories } = this.props;
     const { formValues } = this.state;
     const { errors } = this.state;
-    const { disableSubmit, fireRedirect, id } = this.state;
+    const { disableSubmit, fireRedirect, id, category } = this.state;
 
     return (
       <div>
         {fireRedirect && (
-          <Redirect to={`/category/${id}`}/>
+          <Redirect to={`/${category}/${id}`}/>
         )}
 
         <Grid container className={classes.newPostPageGrid}>

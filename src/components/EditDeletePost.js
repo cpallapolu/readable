@@ -41,13 +41,13 @@ class EditDeletePost extends Component {
   render() {
     const { classes } = this.props;
     const { redirectToEditPost } = this.props;
-    const { currentEditingPostId, postId } = this.props;
+    const { currentEditingPostId, postId, category } = this.props;
     const { doRedirect, to } = this.state;
 
     return (
       <div>
         {
-          redirectToEditPost && <Redirect to={`/category/${postId}`}/>
+          redirectToEditPost && <Redirect to={`/${category}/${postId}`}/>
         }
         {
           doRedirect && <Redirect to={to}/>
