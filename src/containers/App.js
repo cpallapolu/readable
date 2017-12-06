@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import SetName from '../components/SetName';
 import Header from '../components/Header';
 import HomePage from './HomePage';
-import CategoryPage from './CategoryPage';
-import PostPage from './PostPage';
+import CategoryOrPostPage from './CategoryOrPostPage';
 import NewPostPage from './NewPostPage';
 
 import { fetchCategories } from '../state/actions';
@@ -31,11 +30,7 @@ class App extends Component {
         )} />
 
         <Route exact path='/category/:name' render={(props) => (
-          <CategoryPage name={props.match.params.name} />
-        )} />
-
-        <Route exact path='/post/:id' render={(props) => (
-          <PostPage id={props.match.params.id} editMode={currentEditingPostId} />
+          <CategoryOrPostPage name={props.match.params.name} editMode={currentEditingPostId} />
         )} />
 
         <Route exact path='/create' render={() => (

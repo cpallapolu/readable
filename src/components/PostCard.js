@@ -93,7 +93,7 @@ class PostCard extends Component {
           <EditDeletePost postId={id} redirectToEditPost={currentEditingPostId === id} />
 
           <IconButton aria-label="Click Me" className={classes.openPost}>
-            <Link to={`/post/${id}`} >
+            <Link to={`/category/${id}`} >
               <Reply className={classes.reply} />
             </Link>
           </IconButton>

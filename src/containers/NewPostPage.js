@@ -86,7 +86,7 @@ class NewPostPage extends Component {
     return (
       <div>
         {fireRedirect && (
-          <Redirect to={`/post/${id}`}/>
+          <Redirect to={`/category/${id}`}/>
         )}
 
         <Grid container className={classes.newPostPageGrid}>

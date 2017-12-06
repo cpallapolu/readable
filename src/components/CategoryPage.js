@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import PostsGrid from '../components/PostsGrid';
-import CategoryGrid from '../components/CategoryGrid';
+import PostsGrid from './PostsGrid';
+import CategoryGrid from './CategoryGrid';
 
 import { CATEGORY_PAGE } from '../state/actions';
 import { fetchPosts, setPage, setCategory } from '../state/actions';

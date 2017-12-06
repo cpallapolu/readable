@@ -47,7 +47,7 @@ class EditDeletePost extends Component {
     return (
       <div>
         {
-          redirectToEditPost && <Redirect to={`/post/${postId}`}/>
+          redirectToEditPost && <Redirect to={`/category/${postId}`}/>
         }
         {
           doRedirect && <Redirect to={to}/>

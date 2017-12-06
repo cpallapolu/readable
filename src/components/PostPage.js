@@ -10,13 +10,12 @@ import { Grid, Avatar, IconButton, Divider, TextField, Tooltip } from 'material-
 import { Send, AccountCircle } from 'material-ui-icons';
 import { cyan, grey, red, teal } from 'material-ui/colors';
 
-import EditDeletePost from '../components/EditDeletePost';
-import TitleBody from '../components/TitleBody';
-import Vote from '../components/Vote';
-import CommentCategory from '../components/CommentCategory';
-import CommentCard from '../components/CommentCard';
-import CustomDialog from '../components/CustomDialog';
-
+import EditDeletePost from './EditDeletePost';
+import TitleBody from './TitleBody';
+import Vote from './Vote';
+import CommentCategory from './CommentCategory';
+import CommentCard from './CommentCard';
+import CustomDialog from './CustomDialog';
 
 import { fetchPost, updatePost, setPage, setCategory } from '../state/actions';
 import { addComment, votePost, voteComment, POST_PAGE } from '../state/actions';
